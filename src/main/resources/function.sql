@@ -1,0 +1,3 @@
+--
+--name: fRegisterUser(VARCHAR, Boolean); Type: FUNCTION; Schema: public; Owner: User
+--

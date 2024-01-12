@@ -1,0 +1,164 @@
+package com.perpustakaan.app.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.perpustakaan.app.exception.CustomException;
+import com.perpustakaan.app.model.Buku;
+import com.perpustakaan.app.model.Buku_;
+import com.perpustakaan.app.model.Pinjaman;
+import com.perpustakaan.app.model.Stok;
+import com.perpustakaan.app.model.Stok_;
+import com.perpustakaan.app.repository.BukuRepo;
+import com.perpustakaan.app.repository.PinjamanRepo;
+import com.perpustakaan.app.repository.UserRepo;
+import com.perpustakaan.app.service.PinjamanService;
+
+import jakarta.persistence.criteria.Join;
+import lombok.RequiredArgsConstructor;
+
+@RestController @RequestMapping("/buku") @RequiredArgsConstructor
+public class BukuController {
+    
+    private final BukuRepo bukuRepo;
+    private final UserRepo userRepo;
+    private final PinjamanRepo pinjamRepo;
+    private final PinjamanService pinjamService;
+    
+    @Qualifier("CustomJavaMailSenderImpl")
+    private final JavaMailSender mailSender;
+    
+    @GetMapping("/hello")
+    public ResponseEntity<String> getHello(){
+        return ResponseEntity.ok().body("hello");
+    }
+    
+    @GetMapping("/daftar")
+    public ResponseEntity<Page<Buku>> getDaftar(String judul, String pengarang, String penerbit,
+            String kategori, String isbn, Short tahun, Boolean available,
+            @RequestParam(defaultValue="5") Integer size, 
+            @RequestParam(defaultValue="1") Integer page){
+        
+        // Specification ada implementasi yg lebih simpel, fleksibel dan readable, tidak diimplementasikan di program ini
+        Boolean isAnyFilter = false;
+        Specification<Buku> byJudul = (r, q, cb) -> cb.like(cb.lower(r.get(Buku_.JUDUL)),
+                new StringBuilder("%").append(judul).append("%").toString().toLowerCase());
+        Specification<Buku> byPengarang = (r, q, cb) -> cb.like(cb.lower(r.get(Buku_.PENGARANG)),
+                new StringBuilder("%").append(pengarang).append("%").toString().toLowerCase());
+        Specification<Buku> byPenerbit = (r, q, cb) -> cb.like(cb.lower(r.get(Buku_.PENERBIT)),
+                new StringBuilder("%").append(penerbit).append("%").toString().toLowerCase());
+        Specification<Buku> byKategori = (r, q, cb) -> cb.like(cb.lower(r.get(Buku_.KATEGORI)),
+                new StringBuilder("%").append(kategori).append("%").toString().toLowerCase());
+        Specification<Buku> byIsbn = (r, q, cb) -> cb.like(cb.lower(r.get(Buku_.ISBN)),
+                new StringBuilder("%").append(isbn).append("%").toString().toLowerCase());
+        Specification<Buku> byTahun = (r, q, cb) -> cb.equal(r.get(Buku_.TAHUN),tahun);
+        Specification<Buku> isAvailable = ((r, q, cb) -> {
+            Join<Buku, Stok> bukuStok = r.join(Buku_.STOK);
+            q.groupBy(r.get(Buku_.ID));
+            return cb.greaterThan(bukuStok.get(Stok_.QTY), 0);
+        });
+        
+        Specification<Buku> specs = null;
+
+        if (judul != null) {
+            specs = isAnyFilterBefore(specs,byJudul,isAnyFilter);
+            isAnyFilter = true;
+        }
+        if (pengarang != null) {
+            specs = isAnyFilterBefore(specs,byPengarang,isAnyFilter);
+            isAnyFilter = true;
+        }
+        if (penerbit != null) {
+            specs = isAnyFilterBefore(specs,byPenerbit,isAnyFilter);
+            isAnyFilter = true;
+        }
+        if (kategori != null) {
+            specs = isAnyFilterBefore(specs,byKategori,isAnyFilter);
+            isAnyFilter = true;
+        }
+        if (isbn != null) {
+            specs = isAnyFilterBefore(specs,byIsbn,isAnyFilter);
+            isAnyFilter = true;
+        }
+        if (tahun != null) {
+            specs = isAnyFilterBefore(specs,byTahun,isAnyFilter);
+            isAnyFilter = true;
+        }
+        if (available != null) {
+            if(available) {
+                specs = isAnyFilterBefore(specs,isAvailable,isAnyFilter);
+                isAnyFilter = true;
+            }
+        }
+        return ResponseEntity.ok().body(bukuRepo.findAll(specs,PageRequest.of(page-1, size,
+                Sort.by("judul").ascending())));
+    }
+    
+    /*
+    @PostMapping("/send")
+    public ResponseEntity<Mail> postSend(@RequestBody Mail mail){
+        if(mail.subject().isBlank()||mail.to().isBlank()||mail.text().isBlank())
+            throw new CustomException("Subyek, Email Penerima, dan Isi tidak boleh kosong");
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(Mail.FROM);
+        message.setTo(mail.to());
+        message.setText(mail.text());
+        message.setSubject(mail.subject());
+        mailSender.send(message);
+        return ResponseEntity.ok().body(mail);
+    }
+    */
+    
+    @GetMapping("/pinjam")
+    public ResponseEntity<Pinjaman> getPinjam(String userid, Long bukuid){
+        if(!username().equalsIgnoreCase(userid))
+            throw new CustomException("Anda tidak memiliki hak akses atas user lain");
+        return ResponseEntity.ok().body(pinjamService.pinjam(userid, bukuid));
+    }
+    
+    @GetMapping("/kembalikan")
+    public ResponseEntity<Pinjaman> getKembalikan(String userid, Long bukuid){
+        if(!username().equalsIgnoreCase(userid))
+            throw new CustomException("Anda tidak memiliki hak akses atas user lain");
+        return ResponseEntity.ok().body(pinjamService.kembalikan(userid, bukuid));
+    }
+    
+    @GetMapping("/daftar-pinjaman")
+    public ResponseEntity<List<Pinjaman>> getDaftarPinjaman(String userid){
+        if(!username().equalsIgnoreCase(userid))
+            throw new CustomException("Anda tidak memiliki hak akses atas user lain");
+        return ResponseEntity.ok().body(userRepo.findById(userid).get().getPinjaman());
+    }
+    
+    
+    /**
+     * Private method
+     * @param <T>
+     * @param m kumpulan specification T lampau
+     * @param t specification T yg akan di masukkan atau dijadikan pertama
+     * @param isAnyFilter kondisi apakah pernah ada filter sebelumnya
+     * @return specification T
+     */
+    private <T> Specification<T> isAnyFilterBefore(Specification<T> m, Specification<T> t, boolean isAnyFilter){
+        if(!isAnyFilter)
+            return t;
+            else return m.and(t);
+    }
+    
+    private String username() {
+        return SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+    }
+    
+}
