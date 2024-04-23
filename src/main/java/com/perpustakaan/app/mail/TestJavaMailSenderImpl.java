@@ -1,3 +1,4 @@
+/*
 package com.perpustakaan.app.mail;
 
 import java.io.InputStream;
@@ -58,3 +59,4 @@ public class TestJavaMailSenderImpl implements JavaMailSender {
     }
 
 }
+*/

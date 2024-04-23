@@ -10,10 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @Builder
@@ -28,7 +25,7 @@ public class UserGroup {
     UserGroupKey userGroupKey;
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne @ToString.Exclude
     @JoinColumn(name = "usrid", nullable = false, insertable = false, updatable = false, foreignKey = @ForeignKey(name = "fk_usrgrp_usr"))
     private User user;
 

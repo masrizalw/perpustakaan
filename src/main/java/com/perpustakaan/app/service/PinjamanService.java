@@ -6,6 +6,6 @@ public interface PinjamanService {
     
     Pinjaman pinjam(String userid, Long bukuid);
 
-    Pinjaman kembalikan(String userid, Long bukuid);
+    Boolean kembalikan(String userid, Long bukuid);
     
 }

@@ -1,3 +1,4 @@
+/*
 package com.perpustakaan.app.model;
 
 import java.util.Date;
@@ -46,3 +47,4 @@ public class Stok {
     private Buku buku;
 
 }
+*/

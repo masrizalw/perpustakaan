@@ -16,7 +16,8 @@ public class AuthSuccessListener implements ApplicationListener<AuthenticationSu
 		
 	@Autowired private LoginAttemptService loginAttemptService;
 
-	@Override
+	@SuppressWarnings("NullableProblems")
+    @Override
 	public void onApplicationEvent(AuthenticationSuccessEvent event) {
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
                 .getRequest();

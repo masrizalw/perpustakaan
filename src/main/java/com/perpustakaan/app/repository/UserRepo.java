@@ -2,6 +2,9 @@ package com.perpustakaan.app.repository;
 
 import java.util.Optional;
 
+import jakarta.persistence.LockModeType;
+import org.hibernate.annotations.OptimisticLock;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -16,7 +19,7 @@ public interface UserRepo extends Extendable<User, String>{
     Optional<User> findByIdOrEmail(@Param("id") String id,@Param("mail") String mail);
     
     Optional<User> findByEmailOrId(String email,String id);
-    
+
     Optional<User> findById(String id);
     
 }

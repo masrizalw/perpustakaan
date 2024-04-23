@@ -6,6 +6,7 @@ import java.util.List;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 
+import lombok.*;
 import org.springframework.lang.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -20,10 +21,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @Builder
@@ -48,14 +45,14 @@ public class User {
     private boolean disabled;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL, 
-            orphanRemoval = true)
+            orphanRemoval = true) @ToString.Exclude
     //@Nullable
     private List<UserGroup> userGroup;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL,
     		orphanRemoval = true)
     @JsonIgnoreProperties("user")
-    @Nullable
+    @Nullable @ToString.Exclude
     private List<Pinjaman> pinjaman;
 
     @OneToOne(mappedBy = "user") @JsonIgnoreProperties("user")

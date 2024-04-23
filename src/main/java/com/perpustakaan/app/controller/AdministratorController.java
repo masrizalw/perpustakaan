@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import com.perpustakaan.app.service.util.Specs;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -32,8 +33,8 @@ import com.perpustakaan.app.model.Buku;
 import com.perpustakaan.app.model.Buku_;
 import com.perpustakaan.app.model.Pinjaman;
 import com.perpustakaan.app.model.Pinjaman_;
-import com.perpustakaan.app.model.Stok;
-import com.perpustakaan.app.model.Stok_;
+//import com.perpustakaan.app.model.Stok;
+//import com.perpustakaan.app.model.Stok_;
 import com.perpustakaan.app.model.User;
 import com.perpustakaan.app.model.UserGroupKey;
 import com.perpustakaan.app.model.UserGroupKey_;
@@ -48,7 +49,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor @RestController 
 @RequestMapping("/admin")
-public class AdministratorController {
+public class AdministratorController extends Specs {
 
     private final UserService userService;
     private final UserRepo userRepo;
@@ -113,7 +114,6 @@ public class AdministratorController {
         
         LocalDate oldDate = LocalDate.of(2000, 1, 30);
 
-        // Specification ada implementasi yg lebih simpel, fleksibel dan readable tidak diimplementasikan di program ini
         Boolean isAnyFilter = false;
         Specification<Pinjaman> byUserid = (r, q, cb) -> cb.like(cb.lower(r.get(Pinjaman_.USERID)),
                 new StringBuilder("%").append(userid).append("%").toString().toLowerCase());
@@ -204,19 +204,5 @@ public class AdministratorController {
         return Response.get(userRepo.findAll(specs, PageRequest.of(
                 page-1,size,Sort.by("id").descending())));
     }
-    
-    /**
-     * Private method
-     * @param <T>
-     * @param m kumpulan specification T lampau
-     * @param t specification T yg akan di masukkan atau dijadikan pertama
-     * @param isAnyFilter kondisi apakah pernah ada filter sebelumnya
-     * @return specification T
-     */
-    private <T> Specification<T> isAnyFilterBefore(Specification<T> m, Specification<T> t, boolean isAnyFilter){
-        if(!isAnyFilter)
-            return t;
-            else return m.and(t);
-    }
-    
+
 }

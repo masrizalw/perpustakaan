@@ -14,7 +14,7 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.mail.javamail.JavaMailSender;
+//import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -41,7 +41,7 @@ import com.perpustakaan.app.service.util.RegexValidator;
 import com.perpustakaan.app.service.util.PasswordRule;
 import com.perpustakaan.app.service.util.RandomFiveDigit;
 import com.perpustakaan.app.service.util.FilterSpecification;
-import com.perpustakaan.app.service.util.MailBuilder;
+//import com.perpustakaan.app.service.util.MailBuilder;
 
 import jakarta.persistence.criteria.Join;
 import jakarta.transaction.Transactional;
@@ -53,16 +53,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepo userRepo;
     private final BCryptPasswordEncoder bCryptPasswordEncode;
     private final KonfirmasiRepo confirmRepo;
-    private final JavaMailSender mailSender;
+//    private final JavaMailSender mailSender;
     private final GroupApproveRepo groupApproveRepo;
     
     //tidak menggunakan lombok
     public UserServiceImpl(UserRepo userRepo,BCryptPasswordEncoder bCryptPasswordEncode,
-            KonfirmasiRepo confirmRepo,JavaMailSender mailSender,GroupApproveRepo groupApproveRepo) {
+//                           JavaMailSender mailSender,
+            KonfirmasiRepo confirmRepo,GroupApproveRepo groupApproveRepo) {
         this.userRepo = userRepo;
         this.bCryptPasswordEncode = bCryptPasswordEncode;
         this.confirmRepo = confirmRepo;
-        this.mailSender = mailSender;
+//        this.mailSender = mailSender;
         this.groupApproveRepo = groupApproveRepo;
     }
 
@@ -122,7 +123,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         anggota.setUserGroup(List.of(UserGroup.builder().userGroupKey(key).build()));
         anggota.setPassword(bCryptPasswordEncode.encode(anggota.getPassword()));
         //true utk wajib konfirmasi pendaftaran, false sebaliknya
-        anggota.setDisabled(true);
+        anggota.setDisabled(false);
         User anggotaResult = userRepo.save(anggota);
         
         //konfirmasi
@@ -133,12 +134,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         
         //email
         //Note: parameter bisa di enkripsi untuk menghindari fraud
-        mailSender.send(new MailBuilder().to(anggotaResult.getEmail())
-                .subject("Kode Registrasi Perpustakaan Digital 418, Jakarta")
-                .text("Berikut adalah link konfirmasi anda, klik link berikut "
-                        + "http://localhost:8080/auth/konfirmasi?userid="+anggotaResult.getId()
-                        +"&kode="+konfirmResult.getCode())
-                .build());
+//        mailSender.send(new MailBuilder().to(anggotaResult.getEmail())
+//                .subject("Kode Registrasi Perpustakaan Digital 418, Jakarta")
+//                .text("Berikut adalah link konfirmasi anda, klik link berikut "
+//                        + "http://localhost:8080/auth/konfirmasi?userid="+anggotaResult.getId()
+//                        +"&kode="+konfirmResult.getCode())
+//                .build());
         
         return anggotaResult;
     }

@@ -16,7 +16,8 @@ public class AuthFailedListener implements ApplicationListener<AuthenticationFai
 	
 	@Autowired private LoginAttemptService loginAttemptService;
 	
-	@Override
+	@SuppressWarnings("NullableProblems")
+    @Override
 	public void onApplicationEvent(AuthenticationFailureBadCredentialsEvent event) {
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
                 .getRequest();

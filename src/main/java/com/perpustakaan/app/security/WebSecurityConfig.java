@@ -10,6 +10,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class WebSecurityConfig {
 
+    @SuppressWarnings("SpringQualifierCopyableLombok")
     @Qualifier("userServiceImpl")
     private final UserDetailsService userDetailsService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -40,7 +43,10 @@ public class WebSecurityConfig {
         customAuthenticationFilter.setFilterProcessesUrl("/auth/login");
 
         http
-                .csrf(csrf -> csrf.disable())
+                .csrf(AbstractHttpConfigurer::disable)
+                .headers(httpSecurityHeadersConfigurer -> {
+                    httpSecurityHeadersConfigurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable);
+                })
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors(cors -> cors.configurationSource(request -> {
                     var corsConfig = new CorsConfiguration();
@@ -51,7 +57,8 @@ public class WebSecurityConfig {
                 }))
                 .authorizeHttpRequests(authorizeHttpRequests -> {
                     authorizeHttpRequests
-                        .requestMatchers("/auth/**","/setting/menu").permitAll()
+                        .requestMatchers("/auth/**","/setting/menu","/swagger-ui/**","/swagger/**",
+                                "/api-docs/**","/h2-console/**").permitAll()
                         .requestMatchers("/admin/**").hasAuthority("admin")
                         .anyRequest().authenticated();
                 })

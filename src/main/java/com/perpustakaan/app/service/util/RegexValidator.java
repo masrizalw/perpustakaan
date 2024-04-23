@@ -8,8 +8,12 @@ import java.util.regex.Pattern;
 public final class RegexValidator {
     
     //^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$
+/*
     private final static Pattern EMAIL_PATTERN = Pattern.compile(
             "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)+$");
+*/
+    private final static Pattern EMAIL_PATTERN = Pattern.compile(
+            "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]*)+$");
 
     private final static Pattern USERNAME_PATTERN = Pattern.compile(
             "^(?!.*\\s)(?!.*@.*\\.)(?!.*[^a-zA-Z0-9]).*$");
