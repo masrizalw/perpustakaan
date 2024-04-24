@@ -11,6 +11,10 @@ Aplikasi ini hanya menyediakan backend saja. untuk frontend akan di upload terpi
 
 - [@masrizalw](https://www.github.com/masrizalw)
 
+## Requirement
+
+- Openjdk 21
+- Maven
 
 ## Installation
 
