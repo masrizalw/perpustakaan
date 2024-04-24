@@ -32,7 +32,7 @@ Compile dengan IDE seperti eclipse, intellij, dll. atau melalui langkah manual b
   - [tutorial install](https://www.baeldung.com/install-maven-on-windows-linux-mac)
   - [link download](https://maven.apache.org/download.cgi)
     
-- Pada direktory root **/Perpustakaan**, jalankan perintah berikut
+- Pada direktory root **/perpustakaan**, jalankan perintah berikut
 ```bash
 mvn compile
 mvn package
