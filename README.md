@@ -13,7 +13,7 @@ Aplikasi ini hanya menyediakan backend saja. untuk frontend akan di upload terpi
 
 ## Requirement
 
-- Openjdk 21
+- JDK 21
 - Maven
 
 ## Installation
