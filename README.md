@@ -17,13 +17,13 @@ Aplikasi ini hanya menyediakan backend saja. untuk frontend akan di upload terpi
 Clone the project
 
 ```bash
-  git clone https://github.com/masrizalw/perpustakaan.git
+git clone https://github.com/masrizalw/perpustakaan.git
 ```
 
 Go to the project directory
 
 ```bash
-  cd perpustakaan
+cd perpustakaan
 ```
 
 Compile dengan IDE seperti eclipse, intellij, dll. atau melalui langkah manual berikut:
@@ -34,18 +34,18 @@ Compile dengan IDE seperti eclipse, intellij, dll. atau melalui langkah manual b
     
 - Pada direktory root **/Perpustakaan**, jalankan perintah berikut
 ```bash
-  mvn compile
-  mvn package
+mvn compile
+mvn package
 ```
 
 - File app-0.0.1-SNAPSHOT.jar akan tergenerate di direktory /Perpustakaan/target
 ```bash
-  cd target
+cd target
 ```
 
 - Jalankan aplikasi
 ```bash
-  java -jar app-0.0.1-SNAPSHOT.jar
+java -jar app-0.0.1-SNAPSHOT.jar
 ```
 
 ## Usage/Examples
