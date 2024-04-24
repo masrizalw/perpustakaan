@@ -31,22 +31,23 @@ Compile dengan IDE seperti eclipse, intellij, dll. atau melalui langkah manual b
 - Download dan install maven
   - [tutorial install](https://www.baeldung.com/install-maven-on-windows-linux-mac)
   - [link download](https://maven.apache.org/download.cgi)
+    
 - Pada direktory root **/Perpustakaan**, jalankan perintah berikut
 ```bash
   mvn compile
   mvn package
 ```
-- File app-0.0.1-SNAPSHOT.jar akan tergenerate di direktory /Perpustakaan/target, jalankan aplikasi
+
+- File app-0.0.1-SNAPSHOT.jar akan tergenerate di direktory /Perpustakaan/target
 ```bash
   cd target
+```
+
+- Jalankan aplikasi
+```bash
   java -jar app-0.0.1-SNAPSHOT.jar
 ```
 
-Jalankan aplikasi
-
-```bash
-java -jar app-0.0.1-SNAPSHOT.jar
-```
 ## Usage/Examples
 
 1. Gunakan postman atau akses ke [localhost](http://localhost:8080/swagger)
