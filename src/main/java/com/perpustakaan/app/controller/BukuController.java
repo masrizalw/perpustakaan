@@ -3,14 +3,12 @@ package com.perpustakaan.app.controller;
 import java.util.List;
 
 import com.perpustakaan.app.service.util.Specs;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 //import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,7 +25,6 @@ import com.perpustakaan.app.repository.PinjamanRepo;
 import com.perpustakaan.app.repository.UserRepo;
 import com.perpustakaan.app.service.PinjamanService;
 
-import jakarta.persistence.criteria.Join;
 import lombok.RequiredArgsConstructor;
 
 @RestController @RequestMapping("/buku") @RequiredArgsConstructor
@@ -52,7 +49,6 @@ public class BukuController extends Specs {
             @RequestParam(defaultValue="5") Integer size, 
             @RequestParam(defaultValue="1") Integer page){
 
-        boolean isAnyFilter = false;
         Specification<Buku> byJudul = (r, q, cb) -> cb.like(cb.lower(r.get(Buku_.JUDUL)),
                 ("%" + judul + "%").toLowerCase());
         Specification<Buku> byPengarang = (r, q, cb) -> cb.like(cb.lower(r.get(Buku_.PENGARANG)),
@@ -75,37 +71,21 @@ public class BukuController extends Specs {
 
         Specification<Buku> specs = null;
 
-        if (judul != null) {
-            specs = isAnyFilterBefore(specs,byJudul,isAnyFilter);
-            isAnyFilter = true;
-        }
-        if (pengarang != null) {
-            specs = isAnyFilterBefore(specs,byPengarang,isAnyFilter);
-            isAnyFilter = true;
-        }
-        if (penerbit != null) {
-            specs = isAnyFilterBefore(specs,byPenerbit,isAnyFilter);
-            isAnyFilter = true;
-        }
-        if (kategori != null) {
-            specs = isAnyFilterBefore(specs,byKategori,isAnyFilter);
-            isAnyFilter = true;
-        }
-        if (isbn != null) {
-            specs = isAnyFilterBefore(specs,byIsbn,isAnyFilter);
-            isAnyFilter = true;
-        }
-        if (tahun != null) {
-            specs = isAnyFilterBefore(specs,byTahun,isAnyFilter);
-            isAnyFilter = true;
-        }
-        if (available != null) {
-            if(available) {
-                specs = isAnyFilterBefore(specs,isAvailable,isAnyFilter);
-                isAnyFilter = true;
-            }
-        }
-        System.out.println("page"+page+"size"+size);
+        if (judul != null)
+            specs = add(specs,byJudul);
+        if (pengarang != null)
+            specs = add(specs,byPengarang);
+        if (penerbit != null)
+            specs = add(specs,byPenerbit);
+        if (kategori != null)
+            specs = add(specs,byKategori);
+        if (isbn != null)
+            specs = add(specs,byIsbn);
+        if (tahun != null)
+            specs = add(specs,byTahun);
+        if (available != null)
+            if(available)
+                specs = add(specs,isAvailable);
         //noinspection DataFlowIssue
         return ResponseEntity.ok().body(bukuRepo.findAll(specs,PageRequest.of(page-1, size,
                 Sort.by("judul").ascending())));

@@ -4,9 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 import com.perpustakaan.app.service.util.Specs;
@@ -17,7 +15,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.perpustakaan.app.model.UserGroup;
 import com.perpustakaan.app.model.UserGroup_;
 import com.perpustakaan.app.model.User_;
-import com.perpustakaan.app.exception.CustomException;
 import com.perpustakaan.app.model.Buku;
 import com.perpustakaan.app.model.Buku_;
 import com.perpustakaan.app.model.Pinjaman;
@@ -114,7 +110,6 @@ public class AdministratorController extends Specs {
         
         LocalDate oldDate = LocalDate.of(2000, 1, 30);
 
-        Boolean isAnyFilter = false;
         Specification<Pinjaman> byUserid = (r, q, cb) -> cb.like(cb.lower(r.get(Pinjaman_.USERID)),
                 new StringBuilder("%").append(userid).append("%").toString().toLowerCase());
         Specification<Pinjaman> byJudulbuku = (r, q, cb) -> {
@@ -145,40 +140,23 @@ public class AdministratorController extends Specs {
 
         Specification<Pinjaman> specs = null;
 
-        if (userid != null) {
-            specs = isAnyFilterBefore(specs,byUserid,isAnyFilter);
-            isAnyFilter = true;
-        }
-        if (bukuid != null) {
-            specs = isAnyFilterBefore(specs,byBukuid,isAnyFilter);
-            isAnyFilter = true;
-        }
-        if (judulbuku != null) {
-            specs = isAnyFilterBefore(specs,byJudulbuku,isAnyFilter);
-            isAnyFilter = true;
-        }
-        if (dikembalikan != null) {
-            if(!dikembalikan) {
-                specs = isAnyFilterBefore(specs,statusDikembalikan,isAnyFilter);
-                isAnyFilter = true;
-            }
-        }
-        if (tglkembaliStart != null & oldDate.isBefore(tglkembaliStart)) {
-            specs = isAnyFilterBefore(specs,byTglkembaliStart,isAnyFilter);
-            isAnyFilter = true;
-        }
-        if (tglkembaliEnd != null & oldDate.isBefore(tglkembaliEnd)) {
-            specs = isAnyFilterBefore(specs,byTglkembaliEnd,isAnyFilter);
-            isAnyFilter = true;
-        }
-        if (tglpinjamStart != null & oldDate.isBefore(tglpinjamStart)) {
-            specs = isAnyFilterBefore(specs,byTglpinjamStart,isAnyFilter);
-            isAnyFilter = true;
-        }
-        if (tglpinjamEnd != null & oldDate.isBefore(tglpinjamEnd)) {
-            specs = isAnyFilterBefore(specs,byTglpinjamEnd,isAnyFilter);
-            isAnyFilter = true;
-        }
+        if (userid != null)
+            specs = add(specs,byUserid);
+        if (bukuid != null)
+            specs = add(specs,byBukuid);
+        if (judulbuku != null)
+            specs = add(specs,byJudulbuku);
+        if (dikembalikan != null)
+            if(!dikembalikan)
+                specs = add(specs,statusDikembalikan);
+        if (tglkembaliStart != null & oldDate.isBefore(tglkembaliStart))
+            specs = add(specs,byTglkembaliStart);
+        if (tglkembaliEnd != null & oldDate.isBefore(tglkembaliEnd))
+            specs = add(specs,byTglkembaliEnd);
+        if (tglpinjamStart != null & oldDate.isBefore(tglpinjamStart))
+            specs = add(specs,byTglpinjamStart);
+        if (tglpinjamEnd != null & oldDate.isBefore(tglpinjamEnd))
+            specs = add(specs,byTglpinjamEnd);
         return ResponseEntity.ok().body(pinjamRepo.findAll(specs,PageRequest.of(page-1, size,
                 Sort.by("tglKembali").ascending())));
     }

@@ -10,11 +10,10 @@ public class Specs {
      * @param <T>
      * @param m kumpulan specification T lampau
      * @param t specification T yg akan di masukkan atau dijadikan pertama
-     * @param isAnyFilter kondisi apakah pernah ada filter sebelumnya
      * @return specification T
      */
-    protected <T> Specification<T> isAnyFilterBefore(Specification<T> m, Specification<T> t, boolean isAnyFilter){
-        if(!isAnyFilter)
+    protected <T> Specification<T> add(Specification<T> m, Specification<T> t){
+        if(m==null)
             return t;
         else return m.and(t);
     }
