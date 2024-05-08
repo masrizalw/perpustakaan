@@ -56,6 +56,7 @@ java -jar app-0.0.1-SNAPSHOT.jar
 
 1. Gunakan postman atau akses ke [localhost](http://localhost:8080/swagger)
 2. Untuk membuka h2 database akses ke **/h2-console**, username *sa* password *root*
+3. Untuk frontend bisa di unduh di link https://github.com/masrizalw/perpustakaan-fe
 
 ## Tech Stack
 
