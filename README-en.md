@@ -1,5 +1,5 @@
 [![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/masrizalw/perpustakaan/blob/master/README-en.md)
-[![id](https://img.shields.io/badge/lang-pt--br-green.svg)](https://github.com/masrizalw/perpustakaan/blob/master/README.md )
+[![id](https://img.shields.io/badge/lang-id-green.svg)](https://github.com/masrizalw/perpustakaan/blob/master/README.md )
 
 # Simple Perpustakaan (Library)
 
