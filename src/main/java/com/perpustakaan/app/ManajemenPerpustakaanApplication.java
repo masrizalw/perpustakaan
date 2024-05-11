@@ -27,7 +27,8 @@ public class ManajemenPerpustakaanApplication {
 		SpringApplication.run(ManajemenPerpustakaanApplication.class, args);
 	}
 	
-    @Bean BCryptPasswordEncoder bCryptPasswordEncoder() {
+    @Bean
+    BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
     
@@ -65,6 +66,7 @@ public class ManajemenPerpustakaanApplication {
                     .user(user).group(userGroup).build();
             userGroupRepo.saveAll(List.of(saAsAdminGroup, saAsUserGroup, userAsUserGroup));
 
+            //race condition testing, satu user hanya boleh 1 buku, stok buku tdk boleh minus
             List<Pinjaman> transaction = CreateRandomTransaction.start(userList);
             transaction.forEach(_pinjam -> {
                 executor.submit(() -> {
