@@ -1,3 +1,6 @@
+[![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/masrizalw/perpustakaan/blob/master/README-en.md)
+[![id](https://img.shields.io/badge/lang-pt--br-green.svg)](https://github.com/masrizalw/perpustakaan/blob/master/README.md )
+
 # Perpustakaan Sederhana
 
 Perpustakaan sederhana ini membolehkan satu pengguna meminjam maksimal satu buku. Buku-buku memiliki batas stok. Ada banyak role yang bisa diterapkan, namun pada umumnya hanya dua role yang bisa dimaksimalkan penggunaanya. Role sebagai administrator ataupun role sebagai pengguna umum.
