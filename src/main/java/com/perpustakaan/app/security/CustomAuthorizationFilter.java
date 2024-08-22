@@ -67,7 +67,8 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                     new ObjectMapper().writeValue(response.getOutputStream(), tokens);
                 }
             } else {
-                filterChain.doFilter(request, response);
+                //lupa g di throw hehe, parah2
+                throw new RuntimeException("Token tidak ditemukan");
             }
         }
     }
